@@ -8,7 +8,6 @@ Snakemake pipeline for calling SNPs on chromosome X from WGS data in diploid or 
 - chrX-only BAM filtering (hardcoded)
 - GATK HaplotypeCaller with configurable ploidy
 - Optional diploidisation for polyploid samples
-- Fully reproducible via Conda + Snakemake
 
 ## Requirements
 - Conda / Mamba
@@ -30,14 +29,15 @@ Edit `config.yaml`:
 genome: "/path/to/genome.fa"
 ploid: 3
 threads: 8
-
-##Run
+```
+## Run
 Dry run:
 snakemake -n --use-conda
 
 Run:
 snakemake --use-conda --cores 8
 
-##Notes
+
+## Notes
 - chrX is intentionally hardcoded
 - Diploidisation only runs if ploid > 2
