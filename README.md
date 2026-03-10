@@ -26,8 +26,9 @@ data/raw_fastq
 ## Configuration
 Edit `config.yaml`:
 ```yaml
-genome: "/path/to/genome.fa"
-ploid: 3
+genome_mem: "/path/to/genome_BWAmem.fa"
+genome_gatk: "/path/to/genome_gatk.fa"
+ploid: 3 
 threads: 8
 ```
 ## Run
