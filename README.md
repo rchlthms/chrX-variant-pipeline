@@ -24,6 +24,20 @@ data/raw_fastq
 
 
 ## Configuration
+```text
+.
+├── Snakefile
+├── envs/
+│   ├── alignment.yaml
+│   └── fastp.yaml
+│   └── gatk.yaml
+│   └── vcf.yaml
+├── config.yaml
+├── data/
+│   └── raw_fastq/
+├── results/
+├── logs/
+└── README.md
 Edit `config.yaml`:
 ```yaml
 genome_mem: "/path/to/genome_BWAmem.fa"
