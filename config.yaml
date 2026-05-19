@@ -1,4 +1,5 @@
-genome: "/full/path/to/genome.fasta"
+genome_mem: "/full/path/to/genome_mem.fasta"
+genome_gatk: "/full/path/to/genome_gatk"
 reference_name: "GRCh38"
 ploid: 3        # or 2
 threads: 8
