@@ -44,6 +44,7 @@ genome_mem: "/path/to/genome_BWAmem.fa"
 genome_gatk: "/path/to/genome_gatk.fa"
 ploid: 3 
 threads: 8
+java_mem: "16g"
 ```
 ## Run
 Dry run:
