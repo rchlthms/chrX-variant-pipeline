@@ -2,7 +2,6 @@
 data/raw_fastq/
 results/
 logs/
-envs/
 
 # Mac / temp files
 .DS_Store

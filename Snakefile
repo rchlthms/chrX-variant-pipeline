@@ -3,7 +3,7 @@ configfile: "config.yaml"
 SAMPLES, = glob_wildcards("data/raw_fastq/{sample}_1.fq.gz")
 
 if not SAMPLES:
-	raise ValueError("No FASTQ files found in data/raw_fastq matching *_1.fq.gz")
+    raise ValueError("No FASTQ files found in data/raw_fastq matching *_1.fq.gz")
 
 CHR = "chrX"
 
@@ -90,9 +90,11 @@ rule extract_chrX:
         "logs/chrX/{sample}.log"
     shell:
         """
+        {{
+        samtools index {input.bam} {output.ind}
         samtools view -h {input.bam} {CHR} | \
         samtools sort -o {output.bam} \
-        > {log} 2>&1
+        }} > {log} 2>&1
         """
 
 ###############################################################################

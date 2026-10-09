@@ -1,4 +1,4 @@
-genome: "/Users/rachaelt/Documents/GitHub/Genomes/Homo_sapiens_assembly38.fasta"
+genome: "/full/path/to/genome.fasta"
 reference_name: "GRCh38"
 ploid: 3        # or 2
 threads: 8
