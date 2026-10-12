@@ -1,6 +1,7 @@
-genome: "/full/path/to/genome.fasta"
+genome_mem: "/full/path/to/genome_mem.fa"
+genome_gatk: "/full/path/to/genome_gatk.fa"
 reference_name: "GRCh38"
-ploid: 3        # or 2
+ploid: 3
 threads: 8
 java_mem: "16g"
 

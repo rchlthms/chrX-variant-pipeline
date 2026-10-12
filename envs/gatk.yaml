@@ -1,3 +1,4 @@
+
 name: gatk
 channels:
   - bioconda
@@ -6,4 +7,3 @@ dependencies:
   - gatk4
   - openjdk
   - samtools
-

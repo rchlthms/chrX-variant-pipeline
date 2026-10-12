@@ -62,7 +62,7 @@ rule bwa_mem:
     input:
         r1="results/fastp/{sample}_Trimmed_DeDuped_1.fq.gz",
         r2="results/fastp/{sample}_Trimmed_DeDuped_2.fq.gz",
-        ref=config["genome"]
+        ref=config["genome_mem"]
     output:
         bam="results/bam/{sample}_BWA.sorted.bam"
     threads: config["threads"]
@@ -84,7 +84,8 @@ rule extract_chrX:
     input:
         bam="results/bam/{sample}_BWA.sorted.bam"
     output:
-        bam="results/bam/{sample}_chrX.bam"
+        bam="results/bam/{sample}_chrX.bam",
+        ind="results/bam/{sample}_BWA.sorted.bam.bai"
     conda: "envs/alignment.yaml"
     log:
         "logs/chrX/{sample}.log"
@@ -93,7 +94,7 @@ rule extract_chrX:
         {{
         samtools index {input.bam} {output.ind}
         samtools view -h {input.bam} {CHR} | \
-        samtools sort -o {output.bam} \
+        samtools sort -o {output.bam}
         }} > {log} 2>&1
         """
 
@@ -151,14 +152,16 @@ rule mark_duplicates:
 rule haplotypecaller:
     input:
         bam="results/bam/{sample}_chrX_RG_dedup.bam",
-        ref=config["genome"]
+        ref=config["genome_gatk"]
     output:
-        vcf="results/vcf/{sample}_chrX.vcf.gz"
+        vcf="results/vcf/{sample}_chrX.vcf.gz",
+		ind="results/bam/{sample}_chrX_RG_dedup.bam.bai"
     conda: "envs/gatk.yaml"
     log:
         "logs/gatk/{sample}.log"
     shell:
         """
+		samtools index {input.bam}
         gatk --java-options "-Xmx{config[java_mem]}" HaplotypeCaller \
             -R {input.ref} \
             -I {input.bam} \
