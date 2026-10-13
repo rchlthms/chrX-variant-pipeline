@@ -38,7 +38,7 @@ data/raw_fastq
 ├── results/
 ├── logs/
 └── README.md
-
+```
 ## Run
 Dry run:
 snakemake -n --use-conda
