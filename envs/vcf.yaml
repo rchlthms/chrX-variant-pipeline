@@ -1,8 +1,9 @@
 
 name: vcf
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
+  - nodefaults
 dependencies:
   - bcftools=1.24
   - htslib=1.24
