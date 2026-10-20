@@ -4,6 +4,6 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - gatk4
-  - openjdk
-  - samtools
+  - gatk4=4.6.2.0
+  - openjdk=17
+  - samtools=1.23
