@@ -230,13 +230,13 @@ rule haplotypecaller:
         dictionary=SEQUENCE_DICT
     output:
         vcf="results/vcf/{sample}_chrX.vcf.gz",
-		ind="results/bam/{sample}_chrX_RG_dedup.bam.bai"
+        ind="results/bam/{sample}_chrX_RG_dedup.bam.bai"
     conda: "envs/gatk.yaml"
     log:
         "logs/gatk/{sample}.log"
     shell:
         """
-		samtools index {input.bam}
+        samtools index {input.bam}
         gatk --java-options "-Xmx{config[java_mem]}" HaplotypeCaller \
             -R {input.ref} \
             -I {input.bam} \
