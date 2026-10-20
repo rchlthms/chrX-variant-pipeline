@@ -1,8 +1,9 @@
 
 name: gatk
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
+  - nodefaults
 dependencies:
   - gatk4=4.6.2.0
   - openjdk=17
