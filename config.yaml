@@ -1,7 +1,5 @@
-genome_mem: "/full/path/to/genome_mem.fa"
-genome_gatk: "/full/path/to/genome_gatk.fa"
+reference_genome: "/project/saf-a-rnaseq/reference/hg38_ucsc/hg38.fa"
 reference_name: "GRCh38"
-ploid: 3
+ploid: 2
 threads: 8
 java_mem: "16g"
-

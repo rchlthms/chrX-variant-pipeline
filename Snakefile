@@ -1,5 +1,27 @@
 configfile: "config.yaml"
 
+import os
+
+# Reference FASTA
+REFERENCE_GENOME = config["reference_genome"]
+
+# BWA index files
+BWA_INDEX_FILES = [
+    REFERENCE_GENOME + ".amb",
+    REFERENCE_GENOME + ".ann",
+    REFERENCE_GENOME + ".bwt",
+    REFERENCE_GENOME + ".pac",
+    REFERENCE_GENOME + ".sa",
+]
+
+# Samtools FASTA index
+FASTA_INDEX = REFERENCE_GENOME + ".fai"
+
+# GATK sequence dictionary
+SEQUENCE_DICT = (
+    os.path.splitext(REFERENCE_GENOME)[0] + ".dict"
+)
+
 SAMPLES, = glob_wildcards("data/raw_fastq/{sample}_1.fq.gz")
 
 if not SAMPLES:
@@ -25,7 +47,57 @@ rule all:
         )
 
 ###############################################################################
-# Step 1: fastp
+# Step 1: bwa_index
+###############################################################################
+rule bwa_index:
+    input:
+        ref=REFERENCE_GENOME
+    output:
+        amb=REFERENCE_GENOME + ".amb",
+        ann=REFERENCE_GENOME + ".ann",
+        bwt=REFERENCE_GENOME + ".bwt",
+        pac=REFERENCE_GENOME + ".pac",
+        sa=REFERENCE_GENOME + ".sa"
+    conda: "envs/alignment.yaml"
+    log: "logs/reference/bwa_index.log"
+    shell:
+        """
+        bwa index {input.ref} > {log} 2>&1
+        """
+###############################################################################
+# Step 2: fasta_index
+###############################################################################
+rule fasta_index:
+    input:
+        ref=REFERENCE_GENOME
+    output:
+        fai=FASTA_INDEX
+    conda: "envs/alignment.yaml"
+    log: "logs/reference/fasta_index.log"
+    shell:
+        """
+        samtools faidx {input.ref} > {log} 2>&1
+        """
+
+###############################################################################
+# Step 3: sequence_dictionary
+###############################################################################
+rule sequence_dictionary:
+    input:
+        ref=REFERENCE_GENOME
+    output:
+        dictionary=SEQUENCE_DICT
+    conda: "envs/gatk.yaml"
+    log: "logs/reference/sequence_dictionary.log"
+    shell:
+        """
+        gatk CreateSequenceDictionary \
+            -R {input.ref} \
+            -O {output.dictionary} \
+            > {log} 2>&1
+        """
+###############################################################################
+# Step 4: fastp
 ###############################################################################
 
 rule fastp:
@@ -55,14 +127,15 @@ rule fastp:
         """
 
 ###############################################################################
-# Step 2: BWA MEM
+# Step 5: BWA MEM
 ###############################################################################
 
 rule bwa_mem:
     input:
         r1="results/fastp/{sample}_Trimmed_DeDuped_1.fq.gz",
         r2="results/fastp/{sample}_Trimmed_DeDuped_2.fq.gz",
-        ref=config["genome_mem"]
+        ref=REFERENCE_GENOME,
+        index=BWA_INDEX_FILES
     output:
         bam="results/bam/{sample}_BWA.sorted.bam"
     threads: config["threads"]
@@ -77,7 +150,7 @@ rule bwa_mem:
         """
 
 ###############################################################################
-# Step 3: Extract chrX
+# Step 6: Extract chrX
 ###############################################################################
 
 rule extract_chrX:
@@ -99,7 +172,7 @@ rule extract_chrX:
         """
 
 ###############################################################################
-# Step 4: Add read groups
+# Step 7: Add read groups
 ###############################################################################
 
 rule add_read_groups:
@@ -124,7 +197,7 @@ rule add_read_groups:
         """
 
 ###############################################################################
-# Step 5: Mark duplicates
+# Step 8: Mark duplicates
 ###############################################################################
 
 rule mark_duplicates:
@@ -146,13 +219,15 @@ rule mark_duplicates:
         """
 
 ###############################################################################
-# Step 6: HaplotypeCaller (chrX only)
+# Step 9: HaplotypeCaller (chrX only)
 ###############################################################################
 
 rule haplotypecaller:
     input:
         bam="results/bam/{sample}_chrX_RG_dedup.bam",
-        ref=config["genome_gatk"]
+        ref=REFERENCE_GENOME,
+        fai=FASTA_INDEX,
+        dictionary=SEQUENCE_DICT
     output:
         vcf="results/vcf/{sample}_chrX.vcf.gz",
 		ind="results/bam/{sample}_chrX_RG_dedup.bam.bai"
