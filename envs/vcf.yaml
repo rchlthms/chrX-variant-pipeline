@@ -4,5 +4,6 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - bcftools=1.23
-  - htslib=1.23
+  - bcftools=1.24
+  - htslib=1.24
+  - tabix=1.11
