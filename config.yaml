@@ -1,4 +1,4 @@
-reference_genome: "/project/saf-a-rnaseq/reference/hg38_ucsc/hg38.fa"
+reference_genome: "/full/path/to/reference.fa"
 reference_name: "GRCh38"
 ploid: 2
 threads: 8
